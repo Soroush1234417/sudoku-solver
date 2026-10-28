@@ -3,24 +3,21 @@
  * Developer: Soroush Mirzanaziri
  * Institution: Shahid Beheshti University
  * Description: A web-based Sudoku solver utilizing an optimized Backtracking algorithm.
- * Features: Fast string import, realtime board validation, and PWA capabilities.
 -->
 <!DOCTYPE html>
-<html lang="fa" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>سودوکو حل‌کن | پروژه دانشجویی</title>
+    <title>Sudoku Solver | SBU Project</title>
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#3b82f6">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* UI Grid Styles */
         .grid-9x9 { display: grid; grid-template-columns: repeat(9, 1fr); gap: 0; border: 2px solid #1f2937; }
         .cell { width: 100%; aspect-ratio: 1; text-align: center; font-size: 1.25rem; border: 1px solid #d1d5db; outline: none; }
         .cell:focus { background-color: #bfdbfe; }
-        /* 3x3 Sub-grid borders for standard Sudoku look */
-        .cell:nth-child(3n) { border-left: 2px solid #1f2937; }
+        .cell:nth-child(3n) { border-right: 2px solid #1f2937; }
         .row:nth-child(3n) .cell { border-bottom: 2px solid #1f2937; }
         .solved-text { color: #2563eb; font-weight: bold; }
     </style>
@@ -28,35 +25,33 @@
 <body class="bg-gray-100 min-h-screen flex flex-col items-center py-6 px-4">
 
     <div class="w-full max-w-md bg-white rounded-xl shadow-lg p-6">
-        <h1 class="text-2xl font-bold text-center mb-4 text-gray-800">هوش مصنوعی حل سودوکو</h1>
+        <h1 class="text-2xl font-bold text-center mb-4 text-gray-800">🤖 Smart Sudoku Solver</h1>
         
         <!-- Fast Import Module -->
         <div class="mb-6 bg-blue-50 p-3 rounded-lg">
-            <label class="block text-sm font-semibold text-gray-700 mb-2">ورودی سریع (۸۱ کاراکتر):</label>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Fast Import (81 chars):</label>
             <div class="flex gap-2">
-                <input type="text" id="fast-import" placeholder="مثال: 530070000600195..." class="flex-1 p-2 border rounded-md text-left text-sm" dir="ltr">
-                <button onclick="importSudoku()" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 text-sm">اعمال ورودی</button>
+                <input type="text" id="fast-import" placeholder="Example: 530070000600195..." class="flex-1 p-2 border rounded-md text-left text-sm">
+                <button onclick="importSudoku()" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 text-sm font-semibold">Import</button>
             </div>
             <p id="error-msg" class="text-red-500 text-xs mt-2 hidden"></p>
         </div>
 
         <!-- Main Sudoku Board -->
-        <div id="sudoku-board" class="grid-9x9 mb-6" dir="ltr"></div>
+        <div id="sudoku-board" class="grid-9x9 mb-6"></div>
 
         <!-- Action Buttons -->
         <div class="flex gap-3">
-            <button onclick="solveSudoku()" class="flex-1 bg-green-600 text-white py-3 rounded-lg font-bold text-lg hover:bg-green-700 shadow-md transition-colors">حل جدول</button>
-            <button onclick="clearBoard()" class="flex-1 bg-red-500 text-white py-3 rounded-lg font-bold text-lg hover:bg-red-600 shadow-md transition-colors">پاک کردن</button>
+            <button onclick="solveSudoku()" class="flex-1 bg-green-600 text-white py-3 rounded-lg font-bold text-lg hover:bg-green-700 shadow-md transition-colors">Solve Board</button>
+            <button onclick="clearBoard()" class="flex-1 bg-red-500 text-white py-3 rounded-lg font-bold text-lg hover:bg-red-600 shadow-md transition-colors">Clear</button>
         </div>
     </div>
 
     <script>
-        // DOM Elements
         const boardEl = document.getElementById('sudoku-board');
         const errorMsg = document.getElementById('error-msg');
-        let inputs = []; // 2D array representing the 9x9 DOM inputs
+        let inputs = [];
 
-        // Initialize the 9x9 grid on load
         function initBoardUI() {
             for (let r = 0; r < 9; r++) {
                 let rowDiv = document.createElement('div');
@@ -65,10 +60,9 @@
                 for (let c = 0; c < 9; c++) {
                     let input = document.createElement('input');
                     input.className = 'cell';
-                    input.type = 'tel'; // Optimize for mobile numpads
+                    input.type = 'tel';
                     input.maxLength = 1;
                     
-                    // Input validation: Only allow digits 1-9
                     input.addEventListener('input', function() {
                         this.value = this.value.replace(/[^1-9]/g, '');
                         this.classList.remove('solved-text');
@@ -82,7 +76,6 @@
             }
         }
 
-        // State extraction: Convert UI inputs to 2D integer array
         function getBoardState() {
             let board = [];
             for (let r = 0; r < 9; r++) {
@@ -96,11 +89,9 @@
             return board;
         }
 
-        // Apply solved matrix back to UI
         function updateBoardUI(board) {
             for (let r = 0; r < 9; r++) {
                 for (let c = 0; c < 9; c++) {
-                    // Only update cells that were empty to highlight algorithmic solution
                     if (inputs[r][c].value === '' && board[r][c] !== 0) {
                         inputs[r][c].value = board[r][c];
                         inputs[r][c].classList.add('solved-text'); 
@@ -119,7 +110,6 @@
             showError('');
         }
 
-        // UI Error Handler
         function showError(msg) {
             if(msg) {
                 errorMsg.innerText = msg;
@@ -129,11 +119,10 @@
             }
         }
 
-        // O(1) String Parser for Fast Import feature
         function importSudoku() {
             let str = document.getElementById('fast-import').value.replace(/[^0-9\.]/g, '').replace(/\./g, '0');
             if (str.length !== 81) {
-                showError('طول رشته نامعتبر است. دقیقاً ۸۱ کاراکتر وارد کنید.');
+                showError('Invalid length. Please enter exactly 81 characters.');
                 return;
             }
             clearBoard();
@@ -147,20 +136,10 @@
             }
         }
 
-        // ==========================================
-        // ALGORITHM CORE: Backtracking (DFS approach)
-        // ==========================================
-
-        /**
-         * Checks if placing 'num' at board[row][col] violates Sudoku rules.
-         * Time Complexity: O(1) - constant 27 checks per call.
-         */
         function isValidPlacement(board, row, col, num) {
-            // Check current row & column
             for (let x = 0; x < 9; x++) {
                 if (board[row][x] === num || board[x][col] === num) return false;
             }
-            // Check the 3x3 sub-grid
             let startRow = row - row % 3, startCol = col - col % 3;
             for (let i = 0; i < 3; i++) {
                 for (let j = 0; j < 3; j++) {
@@ -170,75 +149,61 @@
             return true;
         }
 
-        /**
-         * Validates the initial user input to prevent infinite loops on unsolvable grids.
-         */
         function validateInitialState(board) {
             for (let r = 0; r < 9; r++) {
                 for (let c = 0; c < 9; c++) {
                     let num = board[r][c];
                     if (num !== 0) {
-                        board[r][c] = 0; // Temporarily clear
+                        board[r][c] = 0; 
                         if (!isValidPlacement(board, r, c, num)) return false;
-                        board[r][c] = num; // Restore
+                        board[r][c] = num; 
                     }
                 }
             }
             return true;
         }
 
-        /**
-         * Recursive Backtracking function.
-         * Explores paths deeply and backtracks when constraints are violated.
-         */
         function solve(board) {
             for (let row = 0; row < 9; row++) {
                 for (let col = 0; col < 9; col++) {
-                    if (board[row][col] === 0) { // Find an empty cell
+                    if (board[row][col] === 0) {
                         for (let num = 1; num <= 9; num++) {
                             if (isValidPlacement(board, row, col, num)) {
-                                board[row][col] = num; // Tentative placement (State change)
-                                
-                                if (solve(board)) return true; // Recursion
-                                
-                                board[row][col] = 0; // Backtrack (Revert state)
+                                board[row][col] = num; 
+                                if (solve(board)) return true; 
+                                board[row][col] = 0; 
                             }
                         }
-                        return false; // Trigger backtracking to previous recursion level
+                        return false; 
                     }
                 }
             }
-            return true; // Base case: board is fully populated
+            return true; 
         }
 
-        // Main Controller Function
         function solveSudoku() {
             showError('');
             let board = getBoardState();
             
-            // 1. Pre-validation check
             if (!validateInitialState(board)) {
-                showError('خطا: قوانین سودوکو در مقادیر اولیه نقض شده است.');
+                showError('Error: Initial board state violates Sudoku rules.');
                 return;
             }
 
-            // 2. Execute Algorithm
             if (solve(board)) {
                 updateBoardUI(board);
             } else {
-                showError('خطا: هیچ جواب معتبری برای این ترکیب وجود ندارد.');
+                showError('Error: No valid solution exists for this configuration.');
             }
         }
 
-        // Bootstrapping
         initBoardUI();
 
-        // PWA Service Worker Registration
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('sw.js')
-                    .then(reg => console.log('ServiceWorker registered successfully.', reg.scope))
-                    .catch(err => console.error('ServiceWorker registration failed:', err));
+                    .then(reg => console.log('ServiceWorker registered'))
+                    .catch(err => console.error('ServiceWorker error:', err));
             });
         }
     </script>
