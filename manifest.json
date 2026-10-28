@@ -1,0 +1,16 @@
+{
+  "name": "Sudoku Solver - SBU Project",
+  "short_name": "Sudoku AI",
+  "description": "Backtracking Algorithm Implementation for Sudoku",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f3f4f6",
+  "theme_color": "#3b82f6",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/103/103130.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
