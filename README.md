@@ -20,7 +20,7 @@ The core logic relies on a recursive Depth-First Search (DFS) approach:
 
 ## 🚀 Live Demo & Installation
 You can use the app directly or install it on your mobile device:
-1. Visit the live link: [Insert Your GitHub Pages Link Here]
+1. Visit the live link: [https://soroush1234417.github.io/sudoku-solver/]
 2. Click on the browser menu and select **"Add to Home Screen"**.
 3. Launch the app directly from your phone!
 
